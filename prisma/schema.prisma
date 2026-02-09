@@ -1,0 +1,57 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id    String     @id @default(auto()) @map("_id") @db.ObjectId
+  name  String     @unique
+  items MenuItem[]
+}
+
+model MenuItem {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  price       Float
+  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  String      @db.ObjectId
+  isAvailable Boolean     @default(true)
+  orderItems  OrderItem[]
+  description String?
+  imageUrl    String?
+}
+
+model Order {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  status       String      @default("PENDING") // PENDING, PREPARING, COMPLETED, CANCELLED
+  type         String      // DINE_IN, PARCEL
+  tableNumber  String?
+  totalAmount  Float
+  items        OrderItem[]
+  specialNote  String?
+  customerName String?
+  mobileNumber String?
+}
+
+model StoreConfig {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  key   String @unique
+  value String
+}
+
+model OrderItem {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String   @db.ObjectId
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItemId String   @db.ObjectId
+  quantity   Int
+  price      Float    // Snapshot of price at time of order
+}

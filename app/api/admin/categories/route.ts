@@ -1,12 +1,7 @@
-
-import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-
-export async function GET() {
-    try {
-        const categories = await prisma.category.findMany();
-        return NextResponse.json(categories);
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });
-    }
+// 1. Change function to 'async'
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  // 2. Await the params object
+  const { id } = await params; 
+  
+  return <div>Item {id}</div>;
 }

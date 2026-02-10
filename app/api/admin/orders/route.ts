@@ -1,31 +1,6 @@
-
-import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-
-export const dynamic = 'force-dynamic';
-
-export async function GET() {
-    try {
-        const orders = await prisma.order.findMany({
-            where: {
-                status: {
-                    not: "COMPLETED", // Fetch active orders
-                },
-            },
-            include: {
-                items: {
-                    include: {
-                        menuItem: true,
-                    },
-                },
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
-        return NextResponse.json(orders);
-    } catch (error) {
-        console.error("Error fetching orders:", error);
-        return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
-    }
+// ✅ NEW CODE (Next.js 15 compatible)
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params; // We 'await' the params here
+  
+  // ... rest of your code using 'id'
 }

@@ -1,29 +1,6 @@
-
-import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-
-export async function GET(
-    req: Request,
-    { params }: { params: { id: string } }
-) {
-    try {
-        const order = await prisma.order.findUnique({
-            where: { id: params.id },
-            include: {
-                items: {
-                    include: {
-                        menuItem: true
-                    }
-                }
-            },
-        });
-
-        if (!order) {
-            return NextResponse.json({ error: "Order not found" }, { status: 404 });
-        }
-
-        return NextResponse.json(order);
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch order" }, { status: 500 });
-    }
+// ✅ NEW CODE (Next.js 15 compatible)
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params; // We 'await' the params here
+  
+  // ... rest of your code using 'id'
 }
